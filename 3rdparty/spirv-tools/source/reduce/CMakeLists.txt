@@ -26,14 +26,14 @@ set(SPIRV_TOOLS_REDUCE_SOURCES
         reduction_util.h
         remove_block_reduction_opportunity.h
         remove_block_reduction_opportunity_finder.h
-        remove_instruction_reduction_opportunity.h
         remove_function_reduction_opportunity.h
         remove_function_reduction_opportunity_finder.h
-        remove_opname_instruction_reduction_opportunity_finder.h
-        remove_relaxed_precision_decoration_opportunity_finder.h
+        remove_instruction_reduction_opportunity.h
         remove_selection_reduction_opportunity.h
         remove_selection_reduction_opportunity_finder.h
-        remove_unreferenced_instruction_reduction_opportunity_finder.h
+        remove_struct_member_reduction_opportunity.h
+        remove_unused_instruction_reduction_opportunity_finder.h
+        remove_unused_struct_member_reduction_opportunity_finder.h
         structured_loop_to_selection_reduction_opportunity.h
         structured_loop_to_selection_reduction_opportunity_finder.h
         conditional_branch_to_simple_conditional_branch_opportunity_finder.h
@@ -57,11 +57,11 @@ set(SPIRV_TOOLS_REDUCE_SOURCES
         remove_function_reduction_opportunity.cpp
         remove_function_reduction_opportunity_finder.cpp
         remove_instruction_reduction_opportunity.cpp
-        remove_relaxed_precision_decoration_opportunity_finder.cpp
         remove_selection_reduction_opportunity.cpp
         remove_selection_reduction_opportunity_finder.cpp
-        remove_unreferenced_instruction_reduction_opportunity_finder.cpp
-        remove_opname_instruction_reduction_opportunity_finder.cpp
+        remove_struct_member_reduction_opportunity.cpp
+        remove_unused_instruction_reduction_opportunity_finder.cpp
+        remove_unused_struct_member_reduction_opportunity_finder.cpp
         structured_loop_to_selection_reduction_opportunity.cpp
         structured_loop_to_selection_reduction_opportunity_finder.cpp
         conditional_branch_to_simple_conditional_branch_opportunity_finder.cpp
@@ -83,8 +83,6 @@ spvtools_default_compile_options(SPIRV-Tools-reduce)
 target_include_directories(SPIRV-Tools-reduce
   PUBLIC
 	$<BUILD_INTERFACE:${spirv-tools_SOURCE_DIR}/include>
-	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/include>
-  PUBLIC
 	$<BUILD_INTERFACE:${SPIRV_HEADER_INCLUDE_DIR}>
 	$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   PRIVATE ${spirv-tools_BINARY_DIR}
@@ -102,5 +100,12 @@ if(ENABLE_SPIRV_TOOLS_INSTALL)
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-  install(EXPORT SPIRV-Tools-reduceTargets DESTINATION lib/cmake)
+  export(EXPORT SPIRV-Tools-reduceTargets FILE SPIRV-Tools-reduceTarget.cmake)
+
+  spvtools_config_package_dir(SPIRV-Tools-reduce PACKAGE_DIR)
+  install(EXPORT SPIRV-Tools-reduceTargets FILE SPIRV-Tools-reduceTarget.cmake
+  	DESTINATION ${PACKAGE_DIR})
+
+  spvtools_generate_config_file(SPIRV-Tools-reduce)
+  install(FILES ${CMAKE_BINARY_DIR}/SPIRV-Tools-reduceConfig.cmake DESTINATION ${PACKAGE_DIR})
 endif(ENABLE_SPIRV_TOOLS_INSTALL)

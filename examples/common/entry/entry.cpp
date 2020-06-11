@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2019 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2020 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
  */
 
@@ -352,9 +352,6 @@ BX_PRAGMA_DIAGNOSTIC_POP();
 		{ entry::Key::GamepadStart, entry::Modifier::None,      1, NULL, "graphics stats"                    },
 		{ entry::Key::F1,           entry::Modifier::LeftShift, 1, NULL, "graphics stats 0\ngraphics text 0" },
 		{ entry::Key::F3,           entry::Modifier::None,      1, NULL, "graphics wireframe"                },
-		{ entry::Key::F4,           entry::Modifier::None,      1, NULL, "graphics hmd"                      },
-		{ entry::Key::F4,           entry::Modifier::LeftShift, 1, NULL, "graphics hmdrecenter"              },
-		{ entry::Key::F4,           entry::Modifier::LeftCtrl,  1, NULL, "graphics hmddbg"                   },
 		{ entry::Key::F6,           entry::Modifier::None,      1, NULL, "graphics profiler"                 },
 		{ entry::Key::F7,           entry::Modifier::None,      1, NULL, "graphics vsync"                    },
 		{ entry::Key::F8,           entry::Modifier::None,      1, NULL, "graphics msaa"                     },

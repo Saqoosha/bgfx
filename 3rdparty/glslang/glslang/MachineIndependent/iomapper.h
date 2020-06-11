@@ -114,7 +114,7 @@ public:
     bool doAutoLocationMapping() const;
     TSlotSet::iterator findSlot(int set, int slot);
     bool checkEmpty(int set, int slot);
-    bool validateInOut(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; };
+    bool validateInOut(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; }
     int reserveSlot(int set, int slot, int size = 1);
     int getFreeSlot(int set, int base, int size = 1);
     int resolveSet(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
@@ -125,10 +125,11 @@ public:
     void addStage(EShLanguage stage) override {
         if (stage < EShLangCount)
             stageMask[stage] = true;
-    };
+    }
     uint32_t computeTypeLocationSize(const TType& type, EShLanguage stage);
 
     TSlotSetMap slots;
+    bool hasError = false;
 
 protected:
     TDefaultIoResolverBase(TDefaultIoResolverBase&);
@@ -191,7 +192,7 @@ public:
     typedef std::map<TString, int> TVarSlotMap;  // <resourceName, location/binding>
     typedef std::map<int, TVarSlotMap> TSlotMap; // <resourceKey, TVarSlotMap>
     TDefaultGlslIoResolver(const TIntermediate& intermediate);
-    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; };
+    bool validateBinding(EShLanguage /*stage*/, TVarEntryInfo& /*ent*/) override { return true; }
     TResourceType getResourceType(const glslang::TType& type) override;
     int resolveInOutLocation(EShLanguage stage, TVarEntryInfo& ent) override;
     int resolveUniformLocation(EShLanguage /*stage*/, TVarEntryInfo& ent) override;
@@ -202,6 +203,7 @@ public:
     void endCollect(EShLanguage) override;
     void reserverStorageSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override;
     void reserverResourceSlot(TVarEntryInfo& ent, TInfoSink& infoSink) override;
+    const TString& getAccessName(const TIntermSymbol*);
     // in/out symbol and uniform symbol are stored in the same resourceSlotMap, the storage key is used to identify each type of symbol.
     // We use stage and storage qualifier to construct a storage key. it can help us identify the same storage resource used in different stage.
     // if a resource is a program resource and we don't need know it usage stage, we can use same stage to build storage key.
@@ -209,7 +211,7 @@ public:
     int buildStorageKey(EShLanguage stage, TStorageQualifier type) {
         assert(static_cast<uint32_t>(stage) <= 0x0000ffff && static_cast<uint32_t>(type) <= 0x0000ffff);
         return (stage << 16) | type;
-    };
+    }
 
 protected:
     // Use for mark pre stage, to get more interface symbol information.
@@ -237,12 +239,13 @@ typedef std::map<TString, TVarEntryInfo> TVarLiveMap;
 // In the future, if the vc++ compiler can handle such a situation,
 // this part of the code will be removed.
 struct TVarLivePair : std::pair<const TString, TVarEntryInfo> {
-    TVarLivePair(std::pair<const TString, TVarEntryInfo>& _Right) : pair(_Right.first, _Right.second) {}
+    TVarLivePair(const std::pair<const TString, TVarEntryInfo>& _Right) : pair(_Right.first, _Right.second) {}
     TVarLivePair& operator=(const TVarLivePair& _Right) {
         const_cast<TString&>(first) = _Right.first;
         second = _Right.second;
         return (*this);
-    };
+    }
+    TVarLivePair(const TVarLivePair& src) : pair(src) { }
 };
 typedef std::vector<TVarLivePair> TVarLiveVector;
 
@@ -253,17 +256,17 @@ public:
     virtual ~TIoMapper() {}
     // grow the reflection stage by stage
     bool virtual addStage(EShLanguage, TIntermediate&, TInfoSink&, TIoMapResolver*);
-    bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; };
+    bool virtual doMap(TIoMapResolver*, TInfoSink&) { return true; }
 };
 
 // I/O mapper for OpenGL
 class TGlslIoMapper : public TIoMapper {
 public:
     TGlslIoMapper() {
-        memset(inVarMaps,     0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
-        memset(outVarMaps,    0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
-        memset(uniformVarMap, 0, sizeof(TVarLiveMap*)   * (EShLangCount + 1));
-        memset(intermediates, 0, sizeof(TIntermediate*) * (EShLangCount + 1));
+        memset(inVarMaps,     0, sizeof(TVarLiveMap*)   * EShLangCount);
+        memset(outVarMaps,    0, sizeof(TVarLiveMap*)   * EShLangCount);
+        memset(uniformVarMap, 0, sizeof(TVarLiveMap*)   * EShLangCount);
+        memset(intermediates, 0, sizeof(TIntermediate*) * EShLangCount);
     }
     virtual ~TGlslIoMapper() {
         for (size_t stage = 0; stage < EShLangCount; stage++) {
