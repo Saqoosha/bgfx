@@ -62,7 +62,7 @@ idl: ## Generate code from IDL.
 	$(GENIE) idl
 
 .build/projects/gmake-android-arm:
-	$(GENIE) --gcc=android-arm gmake
+	$(GENIE) --with-android=23 --gcc=android-arm gmake
 android-arm-debug: .build/projects/gmake-android-arm ## Build - Android ARM Debug
 	$(MAKE) -R -C .build/projects/gmake-android-arm config=debug
 android-arm-release: .build/projects/gmake-android-arm ## Build - Android ARM Release
@@ -70,7 +70,7 @@ android-arm-release: .build/projects/gmake-android-arm ## Build - Android ARM Re
 android-arm: android-arm-debug android-arm-release ## Build - Android ARM Debug and Release
 
 .build/projects/gmake-android-arm64:
-	$(GENIE) --gcc=android-arm64 gmake
+	$(GENIE) --with-android=23 --gcc=android-arm64 gmake
 android-arm64-debug: .build/projects/gmake-android-arm64 ## Build - Android ARM64 Debug
 	$(MAKE) -R -C .build/projects/gmake-android-arm64 config=debug
 android-arm64-release: .build/projects/gmake-android-arm64 ## Build - Android ARM64 Release
@@ -78,7 +78,7 @@ android-arm64-release: .build/projects/gmake-android-arm64 ## Build - Android AR
 android-arm64: android-arm64-debug android-arm64-release ## Build - Android ARM64 Debug and Release
 
 .build/projects/gmake-android-x86:
-	$(GENIE) --gcc=android-x86 gmake
+	$(GENIE) --with-android=23 --gcc=android-x86 gmake
 android-x86-debug: .build/projects/gmake-android-x86 ## Build - Android x86 Debug and Release
 	$(MAKE) -R -C .build/projects/gmake-android-x86 config=debug
 android-x86-release: .build/projects/gmake-android-x86 ## Build - Android x86 Debug and Release
@@ -178,7 +178,7 @@ vs2017-winstore100-release64: .build/projects/vs2017-winstore100 ## Build - vs20
 vs2017-winstore100: vs2017-winstore100-debug32 vs2017-winstore100-release32 vs2017-winstore100-debug64 vs2017-winstore100-release64 ## Build - vs2017-winstore100 x86/x64 Debug and Release
 
 .build/projects/gmake-osx:
-	$(GENIE) --gcc=osx gmake
+	$(GENIE) --with-tools --gcc=osx gmake
 osx-debug64: .build/projects/gmake-osx ## Build - OSX x64 Debug
 	$(MAKE) -C .build/projects/gmake-osx config=debug64
 osx-release64: .build/projects/gmake-osx ## Build - OSX x64 Release
