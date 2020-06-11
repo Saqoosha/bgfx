@@ -2006,7 +2006,9 @@ namespace bgfx
 #endif // BGFX_CONFIG_MULTITHREADED
 
 		bx::memSet(&g_internalData, 0, sizeof(InternalData) );
+		bx::memSet(&g_platformData, 0, sizeof(PlatformData) );
 		s_ctx = NULL;
+        s_renderFrameCalled = false;
 
 		m_submit->destroy();
 
